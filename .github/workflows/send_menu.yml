@@ -1,0 +1,48 @@
+name: Send Meal Menu
+
+on:
+  schedule:
+    - cron: '30 3 * * *'   # 아침 06:30 레바논 (UTC+3 = UTC 03:30)
+    - cron: '0 7 * * *'    # 점심 10:00 레바논 (UTC 07:00)
+    - cron: '0 13 * * *'   # 저녁 16:00 레바논 (UTC 13:00)
+  workflow_dispatch:
+    inputs:
+      meal_type:
+        description: '테스트 식사 선택 (아침/점심/저녁)'
+        required: true
+        default: '점심'
+
+jobs:
+  send-menu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - run: pip install requests
+
+      - name: 식사 타입 결정
+        id: meal
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "type=${{ github.event.inputs.meal_type }}" >> $GITHUB_OUTPUT
+          else
+            HOUR=$(date -u +%H)
+            if [ "$HOUR" = "03" ]; then
+              echo "type=아침" >> $GITHUB_OUTPUT
+            elif [ "$HOUR" = "07" ]; then
+              echo "type=점심" >> $GITHUB_OUTPUT
+            else
+              echo "type=저녁" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+      - name: 메뉴 발송
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          MEAL_TYPE: ${{ steps.meal.outputs.type }}
+        run: python send_menu.py
