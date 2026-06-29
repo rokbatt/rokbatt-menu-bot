@@ -35,13 +35,17 @@ def main():
     if today not in menu or MEAL_TYPE not in menu[today]:
         msg = f"⚠️ {today} {MEAL_TYPE} 메뉴 정보 없음\nmenu.txt를 업데이트해주세요."
     else:
-        items = menu[today][MEAL_TYPE]
+        items_raw = menu[today][MEAL_TYPE]
+        # 쉼표로 나눠서 줄바꿈 처리
+        items_list = [i.strip() for i in items_raw.split(",") if i.strip()]
+        items_formatted = "\n".join(f"• {item}" for item in items_list)
+
         msg = (
             f"{emoji.get(MEAL_TYPE, '🍽')} <b>{MEAL_TYPE} 메뉴</b>\n"
             f"📅 {today}\n"
-            f"━━━━━━━━━━━━━━━\n"
-            f"{items}\n"
-            f"━━━━━━━━━━━━━━━\n"
+            f"──────────────\n"
+            f"{items_formatted}\n"
+            f"──────────────\n"
             f"맛있게 드세요! 😊"
         )
 
