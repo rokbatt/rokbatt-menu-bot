@@ -29,10 +29,16 @@ def parse_menu():
 def main():
     now = datetime.now(LEBANON_TZ)
     today = now.strftime("%Y-%m-%d")
+    print(f"🔍 현재 시각(레바논): {now}")
+    print(f"🔍 오늘 날짜: {today}")
+    print(f"🔍 MEAL_TYPE: {MEAL_TYPE}")
+
     emoji = {"아침": "🌅", "점심": "☀️", "저녁": "🌙"}
     menu = parse_menu()
+    print(f"🔍 menu.txt에서 파싱된 날짜 목록: {list(menu.keys())}")
 
     if today not in menu or MEAL_TYPE not in menu[today]:
+        print(f"⚠️ 매칭 실패 - today in menu: {today in menu}")
         msg = f"⚠️ {today} {MEAL_TYPE} 메뉴 정보 없음\nmenu.txt를 업데이트해주세요."
     else:
         items_raw = menu[today][MEAL_TYPE]
@@ -41,7 +47,7 @@ def main():
         items_formatted = "\n".join(f"• {item}" for item in items_list)
 
         msg = (
-            f"{emoji.get(MEAL_TYPE, '🍽')} <b>{MEAL_TYPE} 메뉴</b>\n"
+            f"{emoji.get(MEAL_TYPE, '🍽')} {MEAL_TYPE} 메뉴\n"
             f"📅 {today}\n"
             f"──────────────\n"
             f"{items_formatted}\n"
