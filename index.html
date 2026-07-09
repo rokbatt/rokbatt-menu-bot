@@ -1,224 +1,270 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ROKBATT 식단표</title>
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&family=Noto+Sans+KR:wght@400;700&display=swap');
   @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@400;600;700&display=swap');
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
+body {
+    font-family: 'Pretendard', 'Noto Sans KR', sans-serif;
+    background: #f8fafc; /* 깔끔하고 부드러운 화이트 톤 배경 */
     font-family: 'Pretendard', sans-serif;
-    background: #ffffff;
-    color: #1e293b;
+    background: #ffffff; /* 완전 깔끔한 흰색 바탕 */
+color: #1e293b;
+    min-height: 100vh;
+    padding: 24px 16px 60px;
     padding: 40px 16px 60px;
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+header {
+text-align: center;
+    padding: 24px 0 32px;
   }
 
-  header {
-    text-align: center;
-    margin-bottom: 32px;
-  }
-
-  header h1 {
-    font-size: 26px;
+  .badge {
+    display: inline-block;
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 12px;
     font-weight: 700;
-    color: #0f172a;
-    letter-spacing: -0.03em;
-  }
+    padding: 6px 14px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+    border: 1px solid #bae6fd;
+    margin-bottom: 32px;
+}
 
-  .date-display {
+header h1 {
+@@ -42,123 +32,104 @@
+}
+
+.date-display {
+    margin-top: 8px;
+    font-size: 16px;
     margin-top: 6px;
     font-size: 15px;
-    font-weight: 600;
-    color: #64748b;
+font-weight: 600;
+color: #64748b;
+}
+
+  /* 반응형 그리드: 화면이 넓어지면 3열로 정렬되어 한눈에 보임 */
+  .meals {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
   }
 
+  .meal-card {
+  /* 전체 식단을 하나로 감싸는 깔끔한 통합 박스 */
   .menu-board {
     width: 100%;
     max-width: 450px;
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+background: #ffffff;
+border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
     border-radius: 12px;
     padding: 24px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-  }
+}
 
+  .meal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 20px 16px;
+    border-bottom: 2px solid #f1f5f9;
+  /* 각 끼니(아침, 점심, 저녁) 섹션 */
   .meal-section {
     margin-bottom: 28px;
   }
   .meal-section:last-child {
     margin-bottom: 0;
-  }
+}
 
+  .meal-title-group {
+  /* 타이틀 영역 (예: 🌅 아침  06:30) */
   .meal-header {
-    display: flex;
+display: flex;
     justify-content: space-between;
-    align-items: center;
+align-items: center;
+    gap: 8px;
     font-size: 16px;
     font-weight: 700;
     color: #0f172a;
     margin-bottom: 8px;
-  }
+}
 
-  .meal-title {
+  .meal-emoji { font-size: 22px; }
+
+.meal-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #0f172a;
     display: flex;
     align-items: center;
     gap: 6px;
-  }
+}
 
-  .meal-time {
-    font-size: 13px;
+.meal-time {
+font-size: 13px;
+    font-weight: 600;
+    background: #f1f5f9;
+    color: #475569;
+    padding: 4px 8px;
+    border-radius: 6px;
     font-weight: 500;
     color: #94a3b8;
   }
 
+  /* 구분선 */
   .divider {
     border: none;
     border-top: 1px dashed #cbd5e1;
     margin-bottom: 12px;
-  }
+}
 
-  .meal-items {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
+  /* 식단 아이템 스타일을 깔끔한 급식표 형태로 변경 */
+  /* 메뉴 리스트 */
+.meal-items {
+    padding: 20px;
+list-style: none;
+display: flex;
+flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
     gap: 6px;
-  }
+}
 
-  .meal-items li {
-    font-size: 15px;
-    font-weight: 500;
-    color: #334155;
+.meal-items li {
+font-size: 15px;
+font-weight: 500;
+color: #334155;
+    padding: 10px 14px;
+    background: #f8fafc;
+    border-radius: 10px;
+    border-left: 4px solid #cbd5e1; /* 좌측에 은은한 바 추가 */
+    transition: all 0.2s;
     padding-left: 4px;
-  }
+}
 
-  .no-data {
-    text-align: center;
+  /* 아침/점심/저녁 카드별 테마 포인트 컬러 부여 */
+  .meal-card:nth-child(1) .meal-items li { border-left-color: #f59e0b; } /* 아침: 노란색 */
+  .meal-card:nth-child(2) .meal-items li { border-left-color: #ef4444; } /* 점심: 빨간색 */
+  .meal-card:nth-child(3) .meal-items li { border-left-color: #3b82f6; } /* 저녁: 파란색 */
+
+  /* 데이터가 없을 때 표시 */
+.no-data {
+    grid-column: 1 / -1;
+text-align: center;
+    padding: 80px 20px;
+    background: #ffffff;
+    border: 1px dashed #cbd5e1;
+    border-radius: 16px;
+    color: #64748b;
     padding: 40px 0;
     color: #94a3b8;
     font-size: 15px;
     font-weight: 500;
-  }
+}
 
-  footer {
-    text-align: center;
+  .no-data .icon { font-size: 48px; margin-bottom: 16px; }
+  .no-data p { font-size: 16px; font-weight: 600; }
+
+footer {
+text-align: center;
+    margin-top: 60px;
+    font-size: 13px;
     margin-top: 40px;
     font-size: 12px;
-    font-weight: 600;
+font-weight: 600;
+    color: #94a3b8;
     color: #cbd5e1;
-    letter-spacing: 0.05em;
-  }
+letter-spacing: 0.05em;
+}
 </style>
 </head>
 <body>
 
 <header>
-  <h1 id="page-title">오늘의 식단표</h1>
-  <div class="date-display" id="date-display">—</div>
+  <div class="badge">🇰🇷 ROKBATT · UNIFIL</div>
+<h1>식단표 미리보기</h1>
+<div class="date-display" id="date-display">—</div>
 </header>
 
+<div class="meals" id="meals-container">
+  <div class="no-data">
+    <div class="icon">⏳</div>
+    <p>식단 정보를 안전하게 불러오는 중입니다...</p>
+  </div>
 <div class="menu-board" id="meals-container">
   <div class="no-data">식단 정보를 불러오는 중입니다...</div>
 </div>
 
 <footer>ROKBATT 급양 자동화 시스템</footer>
-
-<script>
-const MENU_RAW_URL = "https://raw.githubusercontent.com/sunghyun0528/rokbatt-menu-bot/main/menu.txt";
-
-const MEAL_CONFIG = {
-  "아침": { emoji: "🌅", time: "06:30" },
-  "점심": { emoji: "☀️", time: "12:00" },
-  "저녁": { emoji: "🌙", time: "18:00" },
-};
-
-function getParams() {
-  const params = new URLSearchParams(window.location.search);
-  const today = new Date().toISOString().split("T")[0];
-  const date = params.get("date") || today;
-  const isTomorrow = date !== today;
-  return { date, isTomorrow };
-}
-
-function parseMenu(text) {
-  const menu = {};
-  let currentDate = null;
-  for (const raw of text.split("\n")) {
-    const line = raw.trim();
-    if (!line) continue;
-    if (line.length === 10 && line[4] === "-" && line[7] === "-") {
-      currentDate = line;
-      menu[currentDate] = {};
-    } else if (currentDate && line.includes(":")) {
-      const [meal, ...rest] = line.split(":");
-      const mealName = meal.trim();
-      if (["아침", "점심", "저녁"].includes(mealName)) {
-        menu[currentDate][mealName] = rest.join(":").trim();
-      }
-    }
-  }
-  return menu;
-}
-
-function formatDate(dateStr) {
-  const [y, m, d] = dateStr.split("-");
-  const days = ["일", "월", "화", "수", "목", "금", "토"];
-  const day = days[new Date(dateStr).getDay()];
-  return `${y}년 ${parseInt(m)}월 ${parseInt(d)}일 (${day}요일)`;
-}
-
-async function render() {
-  const { date, isTomorrow } = getParams();
-
-  // 타이틀을 날짜에 따라 동적으로 변경
-  document.getElementById("page-title").textContent = isTomorrow ? "내일의 식단표" : "오늘의 식단표";
-  document.getElementById("date-display").textContent = formatDate(date);
-
-  let text;
-  try {
-    const res = await fetch(MENU_RAW_URL + "?t=" + Date.now());
-    text = await res.text();
-  } catch {
+@@ -213,45 +184,38 @@ <h1>식단표 미리보기</h1>
+const res = await fetch(MENU_RAW_URL + "?t=" + Date.now());
+text = await res.text();
+} catch {
+    document.getElementById("meals-container").innerHTML = `
+      <div class="no-data">
+        <div class="icon">⚠️</div>
+        <p>통신 상태가 원활하지 않아 식단 데이터를 불러오지 못했습니다.</p>
+      </div>`;
     document.getElementById("meals-container").innerHTML = `<div class="no-data">⚠️ 식단 데이터를 불러오지 못했습니다.</div>`;
-    return;
-  }
+return;
+}
 
-  const menu = parseMenu(text);
-  const dayMenu = menu[date];
+const menu = parseMenu(text);
+const dayMenu = menu[targetDate];
 
-  if (!dayMenu || Object.keys(dayMenu).length === 0) {
+if (!dayMenu || Object.keys(dayMenu).length === 0) {
+    document.getElementById("meals-container").innerHTML = `
+      <div class="no-data">
+        <div class="icon">📭</div>
+        <p>${formatDate(targetDate)} 식단 정보가 등록되지 않았습니다.</p>
+      </div>`;
     document.getElementById("meals-container").innerHTML = `<div class="no-data">📭 등록된 식단 정보가 없습니다.</div>`;
-    return;
-  }
+return;
+}
 
-  const html = ["아침", "점심", "저녁"].map(meal => {
-    if (!dayMenu[meal]) return "";
-    const { emoji, time } = MEAL_CONFIG[meal];
-    const items = dayMenu[meal].split(",").map(i => i.trim()).filter(Boolean);
-    const liItems = items.map(i => `<li>• ${i}</li>`).join("");
-
-    return `
+const html = ["아침", "점심", "저녁"].map(meal => {
+if (!dayMenu[meal]) return "";
+const { emoji, time } = MEAL_CONFIG[meal];
+const items = dayMenu[meal].split(",").map(i => i.trim()).filter(Boolean);
+    const liItems = items.map(i => `<li>${i}</li>`).join("");
+    const liItems = items.map(i => `<li>• {item_placeholder}</li>`.replace("{item_placeholder}", i)).join("");
+    
+return `
+      <div class="meal-card">
       <div class="meal-section">
-        <div class="meal-header">
+       <div class="meal-header">
+          <div class="meal-title-group">
+            <span class="meal-emoji">${emoji}</span>
+            <span class="meal-title">${meal}</span>
+          </div>
+          <span class="meal-time">${time}</span>
           <div class="meal-title">${emoji} ${meal}</div>
           <div class="meal-time">${time}</div>
-        </div>
+       </div>
+        <ul class="meal-items">${liItems}</ul>
         <hr class="divider">
         <ul class="meal-items">
           ${liItems}
         </ul>
-      </div>`;
-  }).join("");
+     </div>`;
+}).join("");
 
+  document.getElementById("meals-container").innerHTML = html;
   document.getElementById("meals-container").innerHTML = html || `<div class="no-data">📭 등록된 식단 정보가 없습니다.</div>`;
 }
 
 render();
-</script>
-</body>
-</html>
