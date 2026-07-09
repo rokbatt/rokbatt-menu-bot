@@ -11,7 +11,7 @@
 
   body {
     font-family: 'Pretendard', sans-serif;
-    background: #ffffff; /* 완전 깔끔한 흰색 바탕 */
+    background: #ffffff;
     color: #1e293b;
     padding: 40px 16px 60px;
     display: flex;
@@ -38,7 +38,6 @@
     color: #64748b;
   }
 
-  /* 전체 식단을 하나로 감싸는 깔끔한 통합 박스 */
   .menu-board {
     width: 100%;
     max-width: 450px;
@@ -49,7 +48,6 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
   }
 
-  /* 각 끼니(아침, 점심, 저녁) 섹션 */
   .meal-section {
     margin-bottom: 28px;
   }
@@ -57,7 +55,6 @@
     margin-bottom: 0;
   }
 
-  /* 타이틀 영역 (예: 🌅 아침  06:30) */
   .meal-header {
     display: flex;
     justify-content: space-between;
@@ -80,14 +77,12 @@
     color: #94a3b8;
   }
 
-  /* 구분선 */
   .divider {
     border: none;
     border-top: 1px dashed #cbd5e1;
     margin-bottom: 12px;
   }
 
-  /* 메뉴 리스트 */
   .meal-items {
     list-style: none;
     display: flex;
@@ -102,7 +97,6 @@
     padding-left: 4px;
   }
 
-  /* 데이터가 없을 때 표시 */
   .no-data {
     text-align: center;
     padding: 40px 0;
@@ -124,7 +118,7 @@
 <body>
 
 <header>
-  <h1>오늘의 식단표</h1>
+  <h1 id="page-title">오늘의 식단표</h1>
   <div class="date-display" id="date-display">—</div>
 </header>
 
@@ -143,9 +137,12 @@ const MEAL_CONFIG = {
   "저녁": { emoji: "🌙", time: "18:00" },
 };
 
-function getTargetDate() {
+function getParams() {
   const params = new URLSearchParams(window.location.search);
-  return params.get("date") || new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split("T")[0];
+  const date = params.get("date") || today;
+  const isTomorrow = date !== today;
+  return { date, isTomorrow };
 }
 
 function parseMenu(text) {
@@ -176,8 +173,11 @@ function formatDate(dateStr) {
 }
 
 async function render() {
-  const targetDate = getTargetDate();
-  document.getElementById("date-display").textContent = formatDate(targetDate);
+  const { date, isTomorrow } = getParams();
+
+  // 타이틀을 날짜에 따라 동적으로 변경
+  document.getElementById("page-title").textContent = isTomorrow ? "내일의 식단표" : "오늘의 식단표";
+  document.getElementById("date-display").textContent = formatDate(date);
 
   let text;
   try {
@@ -189,7 +189,7 @@ async function render() {
   }
 
   const menu = parseMenu(text);
-  const dayMenu = menu[targetDate];
+  const dayMenu = menu[date];
 
   if (!dayMenu || Object.keys(dayMenu).length === 0) {
     document.getElementById("meals-container").innerHTML = `<div class="no-data">📭 등록된 식단 정보가 없습니다.</div>`;
@@ -200,8 +200,8 @@ async function render() {
     if (!dayMenu[meal]) return "";
     const { emoji, time } = MEAL_CONFIG[meal];
     const items = dayMenu[meal].split(",").map(i => i.trim()).filter(Boolean);
-    const liItems = items.map(i => `<li>• {item_placeholder}</li>`.replace("{item_placeholder}", i)).join("");
-    
+    const liItems = items.map(i => `<li>• ${i}</li>`).join("");
+
     return `
       <div class="meal-section">
         <div class="meal-header">
